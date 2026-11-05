@@ -1,13 +1,27 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: 2026 自分の名前
+# SPDX-License-Identifier: BSD-3-Clause
 
-ng () {                          # 関数ngの定義
-        echo ${1}行目のテスト失敗   # $1はngの1番目の引数
-        res=1                    # 追加: 失敗したことを記録
+ng () {
+    echo "${1}行目のテスト失敗"
+    res=1
 }
 
-res=0                            # 0: 失敗なし（ngが呼ばれると1になる）
-a=奈良
-[ "$a" = 奈良 ] || ng "$LINENO"  # LINENOはこの行の行番号の入る変数
-[ "$a" = 奈良 ] || ng "$LINENO"  # 失敗したら関数ngを呼び出す（$LINENOの値が$1に入る
+res=0
 
+### NORMAL INPUT ###
+out=$(seq 5 | ./plus)
+[ "$?" = 0 ]      || ng "$LINENO"
+[ "${out}" = 15 ] || ng "$LINENO"
+
+### STRANGE INPUT ###
+out=$(echo あ | ./plus)
+[ "$?" = 1 ]      || ng "$LINENO"
+[ "${out}" = "" ] || ng "$LINENO"
+
+out=$(echo | ./plus)
+[ "$?" = 1 ]      || ng "$LINENO"
+[ "${out}" = "" ] || ng "$LINENO"
+
+[ "${res}" = 0 ] && echo OK
 exit $res
